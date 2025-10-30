@@ -4,7 +4,10 @@ import { Suspense, FormEvent, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 
-export const dynamic = 'force-dynamic'; // nie renderuj statycznie strony login
+
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 function LoginInner() {
   const sp = useSearchParams();            // <-- teraz bezpiecznie, wewnątrz Suspense
