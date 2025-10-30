@@ -1,10 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabaseClient';
+import { getSupabaseBrowserClient } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 
 export default function AdminGuard({ children }: { children: React.ReactNode }) {
+  const supabase = getSupabaseBrowserClient();
   const [ready, setReady] = useState(false);
   const router = useRouter();
 
@@ -12,7 +13,10 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
     (async () => {
       const { data: auth } = await supabase.auth.getSession();
       const uid = auth.session?.user?.id;
-      if (!uid) { router.replace('/login'); return; }
+      if (!uid) {
+        router.replace('/login');
+        return;
+      }
 
       // sprawdź role w profilu
       const { data, error } = await supabase
@@ -22,11 +26,12 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
         .maybeSingle();
 
       if (error || !data || data.role !== 'admin') {
-        router.replace('/login?e=forbidden'); return;
+        router.replace('/login?e=forbidden');
+        return;
       }
       setReady(true);
     })();
-  }, [router]);
+  }, [router, supabase]);
 
   if (!ready) return <div className="p-6">Sprawdzam uprawnienia…</div>;
   return <>{children}</>;
