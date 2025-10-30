@@ -5,8 +5,6 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 
 
-
-export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 function LoginInner() {
